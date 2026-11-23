@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Document xmlns="urn:iso:std:iso:20022:tech:xsd:pacs.008.001.08">
+  <FIToFICstmrCdtTrf>
+    <GrpHdr>
+      <MsgId>MSG-2026-CLEAN-001</MsgId>
+      <CreDtTm>2026-11-23T10:15:00Z</CreDtTm>
+    </GrpHdr>
+    <CdtTrfTxInf>
+      <PmtId>
+        <EndToEndId>E2E-CLEAN-001</EndToEndId>
+      </PmtId>
+      <IntrBkSttlmAmt Ccy="EUR">4250.00</IntrBkSttlmAmt>
+      <Dbtr>
+        <Nm>PACIFIC RETAIL BANKING PTY LTD</Nm>
+      </Dbtr>
+      <DbtrAcct>
+        <Id>
+          <IBAN>DE89370400440532013000</IBAN>
+        </Id>
+      </DbtrAcct>
+      <DbtrAgt>
+        <FinInstnId>
+          <BICFI>COBADEFFXXX</BICFI>
+        </FinInstnId>
+      </DbtrAgt>
+      <CdtrAgt>
+        <FinInstnId>
+          <BICFI>NWBKGB2LXXX</BICFI>
+        </FinInstnId>
+      </CdtrAgt>
+      <Cdtr>
+        <Nm>THAMES CLEARING HOUSE LTD</Nm>
+        <PstlAdr>
+          <Ctry>GB</Ctry>
+        </PstlAdr>
+      </Cdtr>
+      <CdtrAcct>
+        <Id>
+          <IBAN>GB82WEST12345698765432</IBAN>
+        </Id>
+      </CdtrAcct>
+    </CdtTrfTxInf>
+  </FIToFICstmrCdtTrf>
+</Document>

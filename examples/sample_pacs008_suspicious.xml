@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Document xmlns="urn:iso:std:iso:20022:tech:xsd:pacs.008.001.08">
+  <FIToFICstmrCdtTrf>
+    <GrpHdr>
+      <MsgId>MSG-2026-SUSP-099</MsgId>
+      <CreDtTm>2026-11-23T02:45:00Z</CreDtTm>
+    </GrpHdr>
+    <CdtTrfTxInf>
+      <PmtId>
+        <EndToEndId>E2E-SUSP-099</EndToEndId>
+      </PmtId>
+      <IntrBkSttlmAmt Ccy="USD">9850.00</IntrBkSttlmAmt>
+      <Dbtr>
+        <Nm>GLOBAL FREIGHT IMPORTS</Nm>
+      </Dbtr>
+      <DbtrAcct>
+        <Id>
+          <IBAN>DE89370400440532013000</IBAN>
+        </Id>
+      </DbtrAcct>
+      <DbtrAgt>
+        <FinInstnId>
+          <BICFI>COBADEFFXXX</BICFI>
+        </FinInstnId>
+      </DbtrAgt>
+      <CdtrAgt>
+        <FinInstnId>
+          <BICFI>NWBKGB2LXXX</BICFI>
+        </FinInstnId>
+      </CdtrAgt>
+      <Cdtr>
+        <Nm>ACME SHELL HOLDING LTD</Nm>
+        <PstlAdr>
+          <Ctry>IR</Ctry>
+        </PstlAdr>
+      </Cdtr>
+      <CdtrAcct>
+        <Id>
+          <IBAN>GB82WEST12345698765432</IBAN>
+        </Id>
+      </CdtrAcct>
+    </CdtTrfTxInf>
+  </FIToFICstmrCdtTrf>
+</Document>
