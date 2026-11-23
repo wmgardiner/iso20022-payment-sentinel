@@ -1,0 +1,14 @@
+[build-system]
+requires = ["setuptools>=68.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "iso20022-payment-sentinel"
+version = "0.1.0"
+description = "ISO 20022 Payment Wire Anomaly, Sanctions Screening & Audit Integrity Guard"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = []
+
+[project.scripts]
+payment-sentinel = "payment_sentinel.cli:main"
