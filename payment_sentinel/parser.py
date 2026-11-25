@@ -96,3 +96,48 @@ def parse_pacs008(xml_payload: str) -> PaymentInstruction:
         creditor_country=_find_text(tx, "Cdtr/PstlAdr/Ctry"),
         created_at=created_at,
     )
+
+
+def parse_pain001(xml_payload: str) -> PaymentInstruction:
+    """Parse an ISO 20022 pain.001 Customer Credit Transfer Initiation XML document."""
+    root = ET.fromstring(xml_payload)
+    body = _find_element(root, "CstmrCdtTrfInitn")
+    if body is None:
+        raise ValueError("Missing CstmrCdtTrfInitn element in ISO 20022 pain.001 message.")
+
+    msg_id = _find_text(body, "GrpHdr/MsgId")
+    cre_dt_tm = _find_text(body, "GrpHdr/CreDtTm")
+    pmt_inf = _find_element(body, "PmtInf")
+    if pmt_inf is None:
+        raise ValueError("Missing PmtInf block in pain.001 message.")
+
+    tx = _find_element(pmt_inf, "CdtTrfTxInf")
+    if tx is None:
+        raise ValueError("Missing CdtTrfTxInf block in pain.001 message.")
+
+    amt_el = _find_element(tx, "Amt/InstdAmt")
+    if amt_el is None or not (amt_el.text or "").strip():
+        raise ValueError("Missing Amt/InstdAmt element in pain.001 message.")
+
+    currency = amt_el.attrib.get("Ccy", "USD")
+    amount = Decimal(amt_el.text.strip())
+    created_at = (
+        datetime.fromisoformat(cre_dt_tm.replace("Z", "+00:00"))
+        if cre_dt_tm
+        else datetime.now(timezone.utc)
+    )
+
+    return PaymentInstruction(
+        msg_id=msg_id,
+        end_to_end_id=_find_text(tx, "PmtId/EndToEndId"),
+        amount=amount,
+        currency=currency,
+        debtor_name=_find_text(pmt_inf, "Dbtr/Nm"),
+        debtor_iban=_find_text(pmt_inf, "DbtrAcct/Id/IBAN"),
+        debtor_bic=_find_text(pmt_inf, "DbtrAgt/FinInstnId/BICFI"),
+        creditor_name=_find_text(tx, "Cdtr/Nm"),
+        creditor_iban=_find_text(tx, "CdtrAcct/Id/IBAN"),
+        creditor_bic=_find_text(tx, "CdtrAgt/FinInstnId/BICFI"),
+        creditor_country=_find_text(tx, "Cdtr/PstlAdr/Ctry"),
+        created_at=created_at,
+    )

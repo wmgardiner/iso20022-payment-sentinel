@@ -86,3 +86,23 @@ def detect_velocity_burst(
             )
         ]
     return []
+
+
+def detect_round_dollar_high_value(
+    payment: PaymentInstruction,
+    min_amount: Decimal = Decimal("25000"),
+) -> List[AnomalyAlert]:
+    """Flag large exact-thousand round-dollar transfers common in shell-company layering."""
+    if payment.amount >= min_amount and payment.amount % Decimal("1000") == 0:
+        return [
+            AnomalyAlert(
+                code="AML-ROUND-HIGH-VALUE",
+                severity="medium",
+                score_delta=25,
+                message=(
+                    f"High-value exact-thousand transfer ({payment.amount} {payment.currency}) "
+                    "matches common layering heuristic."
+                ),
+            )
+        ]
+    return []

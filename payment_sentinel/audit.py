@@ -100,3 +100,7 @@ class AuditLedger:
     @property
     def entries(self) -> List[AuditEntry]:
         return list(self._entries)
+
+    def export_jsonl(self) -> str:
+        """Serialize all audit entries to newline-delimited JSON for SIEM ingestion."""
+        return "\n".join(json.dumps(e.to_dict(), sort_keys=True) for e in self._entries)
