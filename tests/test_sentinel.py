@@ -7,7 +7,7 @@ import unittest
 
 from payment_sentinel.audit import AuditLedger
 from payment_sentinel.engine import PaymentSentinelEngine
-from payment_sentinel.parser import PaymentInstruction, parse_pacs008
+from payment_sentinel.parser import PaymentInstruction, parse_pacs008, parse_pain001
 from payment_sentinel.validators import is_valid_bic, is_valid_iban
 
 EXAMPLES_DIR = Path(__file__).resolve().parent.parent / "examples"
@@ -99,6 +99,39 @@ class TestPaymentSentinel(unittest.TestCase):
             entry_hash=tampered.entry_hash,
         )
         self.assertFalse(ledger.verify_integrity())
+
+    def test_pain001_parser_round_dollar_and_jsonl_export(self) -> None:
+        pain001_xml = """<?xml version="1.0" encoding="UTF-8"?>
+        <Document xmlns="urn:iso:std:iso:20022:tech:xsd:pain.001.001.09">
+          <CstmrCdtTrfInitn>
+            <GrpHdr>
+              <MsgId>PAIN-2026-001</MsgId>
+              <CreDtTm>2026-11-25T12:00:00Z</CreDtTm>
+            </GrpHdr>
+            <PmtInf>
+              <Dbtr><Nm>CORP TREASURY PTY LTD</Nm></Dbtr>
+              <DbtrAcct><Id><IBAN>DE89370400440532013000</IBAN></Id></DbtrAcct>
+              <DbtrAgt><FinInstnId><BICFI>COBADEFFXXX</BICFI></FinInstnId></DbtrAgt>
+              <CdtTrfTxInf>
+                <PmtId><EndToEndId>E2E-PAIN-1</EndToEndId></PmtId>
+                <Amt><InstdAmt Ccy="USD">50000.00</InstdAmt></Amt>
+                <CdtrAgt><FinInstnId><BICFI>NWBKGB2LXXX</BICFI></FinInstnId></CdtrAgt>
+                <Cdtr>
+                  <Nm>MERIDIAN SUPPLIERS LTD</Nm>
+                  <PstlAdr><Ctry>GB</Ctry></PstlAdr>
+                </Cdtr>
+                <CdtrAcct><Id><IBAN>GB82WEST12345698765432</IBAN></Id></CdtrAcct>
+              </CdtTrfTxInf>
+            </PmtInf>
+          </CstmrCdtTrfInitn>
+        </Document>"""
+        payment = parse_pain001(pain001_xml)
+        self.assertEqual(payment.msg_id, "PAIN-2026-001")
+        engine = PaymentSentinelEngine()
+        result = engine.evaluate(payment)
+        self.assertTrue(any(a.code == "AML-ROUND-HIGH-VALUE" for a in result.anomalies))
+        jsonl = engine.ledger.export_jsonl()
+        self.assertIn("PAIN-2026-001", jsonl)
 
 
 if __name__ == "__main__":
