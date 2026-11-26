@@ -6,6 +6,7 @@ from typing import Any, Dict, List, Optional, Sequence
 from payment_sentinel.audit import AuditEntry, AuditLedger
 from payment_sentinel.detectors import (
     AnomalyAlert,
+    detect_cross_border_high_value_fx,
     detect_off_hours_high_value,
     detect_round_dollar_high_value,
     detect_structuring,
@@ -78,6 +79,7 @@ class PaymentSentinelEngine:
         anomalies.extend(detect_off_hours_high_value(payment))
         anomalies.extend(detect_velocity_burst(payment, recent_history))
         anomalies.extend(detect_round_dollar_high_value(payment))
+        anomalies.extend(detect_cross_border_high_value_fx(payment))
 
         risk_score = (
             len(validation_errors) * 35
