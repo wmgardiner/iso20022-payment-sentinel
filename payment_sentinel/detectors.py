@@ -106,3 +106,24 @@ def detect_round_dollar_high_value(
             )
         ]
     return []
+
+
+def detect_cross_border_high_value_fx(
+    payment: PaymentInstruction,
+    home_currency: str = "AUD",
+    fx_threshold: Decimal = Decimal("20000"),
+) -> List[AnomalyAlert]:
+    """Flag high-value non-home-currency cross-border transfers for enhanced due diligence."""
+    if payment.currency.upper() != home_currency.upper() and payment.amount >= fx_threshold:
+        return [
+            AnomalyAlert(
+                code="FX-HIGH-VALUE",
+                severity="medium",
+                score_delta=20,
+                message=(
+                    f"Cross-border FX transfer of {payment.amount} {payment.currency} "
+                    f"exceeds {fx_threshold} enhanced due diligence threshold."
+                ),
+            )
+        ]
+    return []

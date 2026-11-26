@@ -134,5 +134,25 @@ class TestPaymentSentinel(unittest.TestCase):
         self.assertIn("PAIN-2026-001", jsonl)
 
 
+    def test_cross_border_fx_detector(self) -> None:
+        payment = PaymentInstruction(
+            msg_id="MSG-FX-1",
+            end_to_end_id="E2E-FX-1",
+            amount=Decimal("25123.45"),
+            currency="USD",
+            debtor_name="SYDNEY TREASURY",
+            debtor_iban="DE89370400440532013000",
+            debtor_bic="COBADEFFXXX",
+            creditor_name="LONDON COUNTERPARTY",
+            creditor_iban="GB82WEST12345698765432",
+            creditor_bic="NWBKGB2LXXX",
+            creditor_country="GB",
+            created_at=datetime(2026, 11, 26, 10, 0, tzinfo=timezone.utc),
+        )
+        engine = PaymentSentinelEngine()
+        result = engine.evaluate(payment)
+        self.assertTrue(any(a.code == "FX-HIGH-VALUE" for a in result.anomalies))
+
+
 if __name__ == "__main__":
     unittest.main()
